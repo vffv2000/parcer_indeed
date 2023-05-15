@@ -3,6 +3,7 @@ import time
 from art import tprint
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
 tprint("@vffv2000")
 print("Contact on Telegram for custom script development")
@@ -12,21 +13,22 @@ print('To start the parser, type <link> in the console')
 #https://www.indeed.com/jobs?q=manager&l=chicago&fromage=1
 # https://www.indeed.com/jobs?q=manager&l=chicago&fromage=1&start=10
 def get_info(url):
-    driver = webdriver.Chrome()
+
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+
     driver.get(url)
     time.sleep(5)
     count_element = driver.find_element(By.CSS_SELECTOR, 'div.jobsearch-JobCountAndSortPane-jobCount span:first-child')
     count_text = count_element.text
-    count = int(count_text.replace(',', '').split()[0])//10
+    count = int(count_text.replace(',', '').split()[0])//25
     print(count, " links detected")
-    if count > 650:
-        count = 650
 
-    with open('data.txt', 'a') as f:
+    with open('data.txt', 'w') as f:
+        f.write(str(url) + '\n')
         for i in range(10, count, 10):
             idx = url.index('&')
             new_url = url[:idx] + f"&start={i}" + url[idx:]
-            f.write(json.dumps(new_url) + '\n')
+            f.write(str(new_url) + '\n')
 
 
 
